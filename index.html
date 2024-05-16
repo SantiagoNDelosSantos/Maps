@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mapa con Leaflet y Div de Transparencia</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <!-- Title ventana -->
+        <title>{{title}}</title>
+        <!-- Icono ventana -->
+        <link rel="icon" type="image/x-icon" href="/imgs/logoVentanaLMU.png">
+        <!-- Preconnect para la fuente -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+        <!-- Libreria croppie para recortes-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
+        <!-- Sweet Alert-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css">
+
+        <!-- Liberia para Open Street Map-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+        <!-- Metaetiqueta para deshabilitar la traducción -->
+        <meta name="google" content="notranslate">
+
+
+
+        <style>
+            /* Reseteo inicial */
+            * {
+                text-decoration: none;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+                font-family: "Roboto", Arial !important;
+                /* Sacar esa sombra celeste que aparece al presionar algun componente interactuable */
+                -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+            }
+
+            /* Para toda la pagina y todas las queries */
+            body {
+                overflow: auto !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+            }
+
+
+            /*Color celeste ultra claro para el fondo de todas las vistas
+  background-color: #f0f5ff;
+*/
+
+            /* LOGO */
+            .logo {
+                width: 8em !important;
+            }
+
+            /*Scroll bar*/
+            ::-webkit-scrollbar {
+                width: 0.4em;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background-color: #ffffff;
+                border-radius: 1em;
+            }
+
+            /* Textos para toda la pagina */
+            h1,
+            h2,
+            p {
+                text-align: center !important;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            h2 {
+                font-size: 1.2em;
+            }
+
+            p,
+            a {
+                font-size: 0.9em;
+                font-weight: 300;
+            }
+
+            /* Enlaces: */
+            a {
+                color: #000000;
+                font-weight: 600;
+            }
+
+            a:hover {
+                color: #009FF5;
+            }
+
+            /* ALL SVGs */
+            svg {
+                cursor: pointer;
+            }
+
+            /* Estilo para todos los botones con texto */
+            .botonText {
+                font-size: 1em;
+                color: #ffffff;
+                text-align: center;
+                background-color: #009FF5;
+                ;
+                width: auto;
+                padding: 0.7em 0.6em;
+                cursor: pointer;
+                border-radius: 0.5em;
+                border: 0.15em solid #009FF5;
+                border-bottom: 0.15em solid #018dd8;
+            }
+
+            /* Spin de carga */
+            #loader {
+                border: 3px solid white;
+                border-top: 4px solid transparent;
+                border-radius: 100%;
+                width: 1em;
+                height: 1em;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* COLOR CELESTE PARA TODO EL SITIO #009FF5    */
+
+
+            /*QUITAR LAS FLECHITAS DE AUMENTAR O RESTAR A LOS IMPUT NUMBER*/
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Estilos de los inputs */
+            .input__wrapper {
+                position: relative;
+                width: 100%;
+            }
+
+            .input__field {
+                color: #000000;
+                font-size: 1em;
+                border: 1px solid rgba(255, 255, 255, 0.034);
+                background-color: #f3f3f3;
+                width: 100%;
+                padding: 0.7em 0.6em;
+                border-bottom: 1px solid #d2d2d268;
+                border-radius: 0.5em;
+                text-align: center;
+            }
+
+            .input__field:not(:placeholder-shown) {
+                border: 1px solid #d8d8d8 !important;
+            }
+
+            .input__label {
+                position: absolute;
+                top: 0.375rem;
+                left: 0.5rem;
+                padding: 0 0.5em;
+                transition: 0.3s;
+                pointer-events: none;
+                display: none;
+            }
+
+            .input__field:focus {
+                outline-color: #009FF5 !important;
+            }
+
+            .input__field:focus+.input__label,
+            .input__field:not(:placeholder-shown)+.input__label {
+                display: block;
+                font-size: 0.9em;
+                top: -0.5rem;
+                color: #009FF5;
+                border-radius: 3em;
+                background-color: #f3f3f3;
+            }
+
+
+            /* Sweet Alert*/
+            /* Bordes redondeados y border-bottom lineramente mas gris*/
+            .swal2-popup.swal2-modal.swal2-icon-success.swal2-show,
+            .swal2-popup.swal2-modal.swal2-icon-error.swal2-show,
+            .swal2-popup.swal2-modal.swal2-icon-info.swal2-show,
+            .swal2-popup.swal2-modal.swal2-icon-warning.swal2-show,
+            .swal2-container.swal2-center>.swal2-popup,
+            .swal2-popup.swal2-toast {
+                border-radius: 1.5em !important;
+                border-bottom: 0.1em solid rgba(174, 173, 173, 0.78) !important;
+            }
+
+            /* Margen hacia arriba en todos los iconos de las alerts */
+            .swal2-icon {
+                margin: 1.7em auto .6em;
+            }
+
+            /* Tamaño para el title de los alerts (El Toast tiene su size aparte, no es este). */
+            h2#swal2-title {
+                font-size: 1.3em !important;
+                color: black;
+            }
+
+            /* Este es el tamaño de la fuente que este debajo de los title de los alerts. */
+            div:where(.swal2-container) .swal2-html-container {
+                font-size: 1em !important;
+            }
+
+            /* Tamaño para el texto del toast */
+            .swal2-popup.swal2-toast {
+                font-size: 0.65em !important;
+            }
+
+            /* Entiendo que agrega un scroll en caso de que el contenido no entre del todo en el alert*/
+            .swal2-container.swal2-center.swal2-backdrop-show {
+                overflow-y: auto;
+            }
+
+            /* Para que no se rompa el contenedor del toast, uno cuando aparece, el otro al desaparecer */
+            .swal2-container.swal2-top-end.swal2-backdrop-show,
+            .swal2-container.swal2-top-end.swal2-backdrop-hide {
+                width: auto !important;
+            }
+
+            /* Esto es basicamente para estar seguros de que el body del alert (El contendor principal) no tenga ningun padding raro y que este bien centrado */
+            body.swal2-shown.swal2-height-auto {
+                padding-right: 0 !important;
+            }
+
+            .swal2-timer-progress-bar {
+                background-color: #1298EA;
+            }
+
+            /* Border radius para los botones */
+            button.swal2-confirm.swal2-styled,
+            button.swal2-cancel.swal2-styled {
+                border-radius: 1em;
+            }
+
+            /* Con esto le sacamos una sombra tipo neomorfismo que tienen los botones al activarse el hover, como profundidad: */
+            div:where(.swal2-actions):not(.swal2-loading) .swal2-styled:hover {
+                background-image: none !important;
+            }
+
+            /* Esto es para sacarle ese focus asqueroso que aparece por defecto en los botones al cargarse el Sweet alert: */
+            .swal2-confirm:not([disabled]) {
+                box-shadow: none !important;
+                outline: none !important;
+            }
+
+            .swal2-cancel:not([disable]) {
+                box-shadow: none !important;
+                outline: none !important;
+            }
+
+            /* Estas son las transiciones para cuando un alert aparacece y otra para cuando desaparece: */
+            @keyframes custom-swal2-show {
+                0% {
+                    transform: scale(0.7);
+                    opacity: 0;
+                }
+
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes custom-swal2-hide {
+                0% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+
+                100% {
+                    transform: scale(0.7);
+                    opacity: 0;
+                }
+            }
+
+            .custom-swal2-show {
+                animation-name: custom-swal2-show;
+                animation-duration: 0.2s;
+            }
+
+            .custom-swal2-hide {
+                animation-name: custom-swal2-hide;
+                animation-duration: 0.2s;
+            }
+
+            /* Botón X de cerrrar pestaña */
+            button.swal2-close {
+                box-shadow: none !important;
+                color: black !important;
+                border-top-right-radius: 0.5em;
+                background: rgba(0, 0, 0, 0.1);
+                border-bottom-left-radius: 0.5em;
+                border-top-left-radius: 0em;
+                border-bottom-right-radius: 0em;
+            }
+
+            div:where(.swal2-container) button:where(.swal2-close):hover {
+                color: #E23237 !important;
+                background: rgba(0, 0, 0, 0.1) !important;
+            }
+
+            /* Gap entre Cancelar y Confirmar */
+            .swal2-actions {
+                gap: 2em;
+            }
+
+            .return {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                flex-direction: row;
+                align-items: center;
+                padding: 4%;
+                border-bottom: 1px solid #f3f3f3;
+            }
+
+            a:hover {
+                color: black;
+            }
+
+            h2,
+            p {
+                text-align: left !important;
+            }
+
+            .createSeller {
+                width: 92%;
+                margin: 4.5%;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 1em;
+                margin-top: 0em;
+            }
+
+
+            input {
+                width: 80%;
+            }
+
+            /* El area del dropzone y todo lo que este adentro */
+            /* FOTO DE FONDO */
+            #dropzone1 {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                border: 1.5px dashed #ccc;
+                padding: 1em;
+                text-align: center;
+                gap: 0.5em;
+                width: 250px;
+                height: 160px;
+                border-radius: 0.5em;
+                cursor: pointer;
+            }
+
+            /* FOTO DE PERFIL */
+            #dropzone2 {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                border: 1.5px dashed #ccc;
+                padding: 1em;
+                text-align: center;
+                gap: 0.5em;
+                width: 150px;
+                height: 150px;
+                border-radius: 100%;
+                cursor: pointer;
+            }
+
+            /* Hover para ambos drop zone */
+            #dropzone1:hover,
+            #dropzone2:hover {
+                border: 1.5px solid #cacaca;
+                background-color: #f0f0f0a2;
+            }
+
+            /* Parrafo para ambos dropzone */
+            .parrafoDropZone {
+                text-align: center !important;
+            }
+
+            /* Contenedor para las imagen a recortar y botones */
+            #imageContainer1,
+            #imageContainer2 {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: auto;
+            }
+
+            /* Bótones cambiar y recortar */
+            #actionsCrop1,
+            #actionsCrop2 {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: row;
+                width: 100%;
+                height: auto;
+                gap: 1em;
+            }
+
+            /* Div para result 1 y 2*/
+            #result1,
+            #result2 {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                width: 100%;
+                height: auto;
+            }
+
+
+
+            /* Contenedor para el bóton de eliminar FONDO */
+            .actions1 {
+                display: flex;
+                justify-content: center;
+                flex-direction: row;
+                width: 100%;
+                gap: 17em;
+                position: absolute;
+                margin-top: -8.5em;
+            }
+
+            /* Contenedor para el bóton de eliminar PERFIL */
+            .actions2 {
+                display: flex;
+                justify-content: center;
+                flex-direction: row;
+                width: 100%;
+                gap: 8em;
+                position: absolute;
+                margin-top: -7.5em;
+            }
+
+
+            /* Barra para hacer zoom*/
+            input.cr-slider {
+                max-width: 80%;
+            }
+
+            /* Area de recorte de Croopie */
+            .croppie-container .cr-slider-wrap {
+                width: 61%;
+                margin: 15px auto;
+                margin-top: 0.5em;
+                text-align: center;
+                margin-bottom: 0.5em;
+            }
+
+            .cr-viewport.cr-vp-square {
+                border: none;
+            }
+
+            /* h2 para los Sweet alerts */
+            h2#swal2-title {
+                text-align: center !important;
+            }
+
+            /* Estilos para el text area */
+
+            textarea {
+                width: 100%;
+                height: 11em;
+                /* Establece una altura máxima para el text area */
+                overflow-y: auto;
+                /* Añade una barra de desplazamiento vertical si el contenido excede la altura máxima */
+                resize: none;
+                padding: 0.5em;
+                background-color: #f3f3f3;
+                border: none;
+                border-radius: 0.5em;
+            }
+
+            textarea:focus {
+                outline-color: #009FF5 !important;
+            }
+
+
+
+            #map {
+                width: 100%;
+                height: 20em;
+                border-radius: 0.5em
+            }
+        </style>
+    </head>
+
+<body>
+
+    <div class="return" style="border-bottom: 2px solid #f3f3f3;">
+        <a href="/account" style="height: 30px;">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="30" height="30" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m15 19-7-7 7-7" />
+            </svg>
+        </a>
+        <h1>Crear Perfil Seller</h1>
+        <div style="width: 30px;"></div>
+    </div>
+
+    <div class="createSeller">
+
+        <p><b>Ubicación:</b></p>
+        <p>Actualmente, nuestra plataforma solo está disponible para Posadas y Garupá. Estamos trabajando para
+            expandirnos a
+            otras localidades en el futuro. Sin embargo, por el momento, la creación de un Perfil Seller solo es posible
+            estando presente en alguna de estas áreas.</p>
+        <p>Para validar tu ubicación, primero debes activar la función de ubicación GPS en tu dispositivo. Una vez que
+            lo
+            hayas hecho, presiona el botón que se encuentra a continuación. Este verificará tu ubicación y te indicará
+            si te
+            encuentras dentro del área habilitada. En caso afirmativo, podrás continuar con el proceso de creación.</p>
+
+        <button id="verificarUbicacion" style="display: block;" class="botonText">Verificar ubicación</button>
+
+        <div id="changebtn2" class="botonText" style="display: none;">
+            <div style="display: flex; align-items: center; justify-content:center; height: 19.340px !important;">
+                <div id="loader"></div>
+            </div>
+        </div>
+
+        <p style="color: #009FF5;" id="resultadoUbi"></p>
+
+    </div>
+
+    <div id="ifUbiValida" class="createSeller" style="display: none;">
+
+        <!-- Nombre Comercial -->
+        <p><b>Nombre Comercial:</b></p>
+        <p>Ingresa el nombre con el que quieres que los usuarios identifiquen tu perfil.</p>
+        <input type="text" name="first_name" id="first_name" class="input__field" placeholder="Nombre Comercial"
+            maxlength="30" required>
+
+        <!-- FOTO DE FONDO -->
+        <p><b>Foto de Fondo:</b></p>
+        <p>Si tienes una tienda física, aquí puedes subir una foto de tu negocio o productos a publicar.</p>
+
+        <div id="dropContainer1" style="display: flex; width: 100%; justify-content: center;">
+            <div id="dropzone1" class="dropzone">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd"
+                        d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Zm.394 9.553a1 1 0 0 0-1.817.062l-2.5 6A1 1 0 0 0 8 19h8a1 1 0 0 0 .894-1.447l-2-4A1 1 0 0 0 13.2 13.4l-.53.706-1.276-2.553ZM13 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <p class="parrafoDropZone">
+                    Haz clic para seleccionar la imágen.
+                </p>
+                <input type="file" id="fileInput1" style="display: none;">
+            </div>
+        </div>
+
+        <div id="containerImg1" style="display: none;">
+            <div id="imageContainer1">
+                <div id="cropContainer1"></div>
+                <div id="actionsCrop1">
+                    <button id="cropBtn1" class="botonText" style=" padding: 0.2em;">Cambiar</button>
+                    <button id="cropBtn2" class="botonText" style=" padding: 0.2em;">Recortar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="result1" style="display: none;">
+        </div>
+
+        <!-- FOTO DE PERFIL -->
+
+        <p><b>Foto de Perfil:</b></p>
+        <p>Aqui es recomendable subir un icono o un logo pero, si no tienes uno puedes subir alguna imagen alusiva a las
+            publicaciones que deseas crear.</p>
+
+        <div id="dropContainer2" style="display: flex; width: 100%; justify-content: center;">
+            <div id="dropzone2" class="dropzone">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd"
+                        d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <p class="parrafoDropZone">
+                    Haz clic para seleccionar la imágen.
+                </p>
+                <input type="file" id="fileInput2" style="display: none;">
+            </div>
+        </div>
+
+        <div id="containerImg2" style="display: none;">
+            <div id="imageContainer2">
+                <div id="cropContainer2"></div>
+                <div id="actionsCrop2">
+                    <button id="cropBtn3" class="botonText" style=" padding: 0.2em;">Cambiar</button>
+                    <button id="cropBtn4" class="botonText" style=" padding: 0.2em;">Recortar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="result2" style="display: none;">
+        </div>
+
+        <!-- Presentación : -->
+        <p><b>Presentación:</b></p>
+        <p>Este espacio te permite describir tu negocio, productos o servicios de manera atractiva. Es tu oportunidad
+            para
+            destacar lo que haces y captar la atención de tus clientes potenciales.</p>
+        <div style="position:relative;">
+            <textarea id="description" maxlength="300" style="width: 100%;"></textarea>
+            <span id="characterCount"
+                style="position:absolute; bottom: 7px; right: 7px; color: gray; font-size: 0.8em;">0/300</span>
+        </div>
+
+        <!-- Página Web -->
+        <p><b>Página Web:</b></p>
+        <p>Si dispones de un sitio web propio, tienes la oportunidad de enlazarlo directamente a tu perfil, permitiendo
+            a
+            los usuarios acceder y conocer más acerca de tu negocio o proyecto.</p>
+        <input type="text" name="pageWeb" id="pageWeb" class="input__field" placeholder="Página Web" maxlength="40">
+
+        <!-- Número de celular -->
+        <p><b>Número de Celular:</b></p>
+        <p>Esencial para el botón 'Contactar' en tus publicaciones (WhatsApp). Debes incluir el prefijo internacional
+            argentino (54) seguido del código de área y el número, sin espacios entre ellos. Por ejemplo: 5493764123456.
+        </p>
+        <input type="text" name="phone" id="phone" class="input__field" placeholder="Número de Celular" maxlength="20">
+
+        <!-- Número de celular -->
+        <p><b>Dirección:</b></p>
+        <p>Para la dirección de tu Perfil Seller hay cuatro opciones entre las que puedes elegir.</p>
+
+        <button class="botonText" id="cargarMaps">Cargar mapa</button>
+
+        <div id="map"></div>
+
+        <!--
+    
+            phone:
+            // LOCALIDAD.
+            location:
+            // DIRECCIÓN EN CASO DE TENER TIENDA FISICA.
+            address:
+    
+            totalPublications:
+            followersCount:
+        </h2>
+    
+        -->
+
+
+    </div>
+
+    <!-- Script de cropie -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+
+
+    <!-- Scrip de libreia para Open Street Map -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/sweetAlertCustom.js"></script>
+    <script>
+
+        let btnVerificar = document.getElementById('verificarUbicacion')
+        // Variable con las coordenadas: 
+        let ubicacionActual
+
+        function verificarUbicacion() {
+            let puntos = [
+                { lat: -27.343541, lng: -56.035848 },
+                { lat: -27.347477, lng: -55.892335 },
+                { lat: -27.452130, lng: -55.811615 },
+                { lat: -27.503693, lng: -55.815179 },
+                { lat: -27.484567, lng: -55.974452 },
+                { lat: -27.405423, lng: -56.029561 }
+            ];
+            function puntoDentroDelPoligono(lat, lng, puntos) {
+                let dentro = false;
+                for (let i = 0, j = puntos.length - 1; i < puntos.length; j = i++) {
+                    let xi = puntos[i].lat, yi = puntos[i].lng;
+                    let xj = puntos[j].lat, yj = puntos[j].lng;
+                    let intersecta = ((yi > lng) != (yj > lng)) &&
+                        (lat < (xj - xi) * (lng - yi) / (yj - yi) + xi);
+                    if (intersecta) dentro = !dentro;
+                }
+                return dentro;
+            }
+            function mostrarUbicacion(posicion) {
+
+                /*SOLO PRUEBA - ESTO HAY QUE ELIMINAR PARA QUE SE TOMEN LAS COORDENADAS REALES. */
+                let latitude = -27.392132
+                let longitude = -55.913362
+
+                /*
+                FINAL
+                let latitude = posicion.coords.latitude;
+                let longitude = posicion.coords.longitude;
+                */
+
+                let estaDentro = puntoDentroDelPoligono(latitude, longitude, puntos);
+                let resultadoUbi = document.getElementById('resultadoUbi');
+                if (estaDentro) {
+                    btnVerificar.style.display = 'none'
+                    resultadoUbi.innerHTML = 'Área habilitada, puedes continuar.'
+                    let ifUbiValida = document.getElementById('ifUbiValida')
+                    ifUbiValida.style.display = 'flex'
+                    ifUbiValida.style.marginTop = '0'
+                    ifUbiValida.style.paddingTop = '0'
+
+                    // SOLO PRUEBA: 
+                    ubicacionActual = [`${latitude}`, `${longitude}`]
+
+                    /*
+                    FINAL
+                    // Guardar la ubicación en la variable para usarla en el map
+                    ubicacionActual = [`${posicion.coords.latitude}`, `${posicion.coords.longitude}`];
+                    */
+
+                    console.log(ubicacionActual)
+
+                } else {
+                    btnVerificar.style.display = 'none'
+                    resultadoUbi.innerHTML = 'Parece que te encuentras fuera del área de servicio en este momento. No te preocupes, estamos trabajando para expandir nuestra cobertura pronto.'
+                    resultadoUbi.style.color = 'rgb(184, 7, 7)'
+                }
+            }
+            function errorObteniendoUbicacion(e) {
+                let resultadoUbi = document.getElementById('resultadoUbi');
+                if (e == '[object GeolocationPositionError]') {
+                    resultadoUbi.innerHTML = 'Error al obtener la ubicación. Asegurate de activar la ubicación GPS en tu dispositivo. Puedes activarla y recargar la página para volver a intentarlo.';
+                }
+            }
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(mostrarUbicacion, errorObteniendoUbicacion);
+            } else {
+                let resultadoUbi = document.getElementById('resultadoUbi');
+                resultadoUbi.innerHTML = 'La geolocalización no está disponible en este navegador.';
+            }
+        }
+
+        btnVerificar.addEventListener('click', (e) => {
+            e.preventDefault()
+            verificarUbicacion();
+        })
+
+
+        //  FOTO DE FONDO:
+
+        // Part 1:
+
+        // DropContainer1:
+        const dropContainer1 = document.getElementById('dropContainer1')
+        // Dropzone: 
+        const dropzone1 = document.getElementById('dropzone1');
+        // File input:
+        const fileInput1 = document.getElementById('fileInput1');
+
+        // FOTO DE PERFIL: 
+
+        // Part 01:
+
+        // DropContainer1:
+        const dropContainer2 = document.getElementById('dropContainer2')
+        // Dropzone: 
+        const dropzone2 = document.getElementById('dropzone2');
+        // File input:
+        const fileInput2 = document.getElementById('fileInput2');
+
+
+
+        // FOTO DE FONDO:
+
+        // Part 2:
+
+        // Area de todo el croopie:
+        const containerImg1 = document.getElementById('containerImg1')
+
+        // FOTO DE PERFIL: 
+
+        // Part 02: 
+
+        // Area de todo el croopie:
+        const containerImg2 = document.getElementById('containerImg2')
+
+
+        // FOTO DE FONDO:
+
+        // Part 3:
+
+        // Area del resultado:
+        const resultElement1 = document.getElementById('result1');
+
+        // FOTO DE PERFIL: 
+
+        // Part 03:
+
+        // Area del resultado:
+        const resultElement2 = document.getElementById('result2');
+
+
+
+        /* Captura del input file FONDO */
+        dropzone1.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone1.classList.add('hover');
+        });
+        dropzone1.addEventListener('dragleave', () => {
+            dropzone1.classList.remove('hover');
+        });
+        dropzone1.addEventListener('click', () => {
+            fileInput1.click();
+        });
+        dropzone1.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            dropzone1.classList.remove('hover');
+            const file1 = e.target.files[0];
+            containerImg1.style.display = 'flex'
+            dropContainer1.style.display = 'none'
+            handleFiles1(file1);
+            fileInput1.value = ""
+        });
+        fileInput1.addEventListener('change', async (e) => {
+            e.preventDefault();
+            dropzone1.classList.remove('hover');
+            const file1 = e.target.files[0];
+            containerImg1.style.display = 'flex'
+            dropContainer1.style.display = 'none'
+            handleFiles1(file1);
+            fileInput1.value = ""
+        });
+
+
+        /* Captura del input file PERFIL */
+        dropzone2.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone2.classList.add('hover');
+        });
+        dropzone2.addEventListener('dragleave', () => {
+            dropzone2.classList.remove('hover');
+        });
+        dropzone2.addEventListener('click', () => {
+            fileInput2.click();
+        });
+        dropzone2.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            dropzone2.classList.remove('hover');
+            const file2 = e.target.files[0];
+            containerImg2.style.display = 'flex'
+            dropContainer2.style.display = 'none'
+            handleFiles2(file2);
+            fileInput2.value = ""
+        });
+        fileInput2.addEventListener('change', async (e) => {
+            e.preventDefault();
+            dropzone2.classList.remove('hover');
+            const file2 = e.target.files[0];
+            containerImg2.style.display = 'flex'
+            dropContainer2.style.display = 'none'
+            handleFiles2(file2);
+            fileInput2.value = ""
+        });
+
+
+
+        // En esta variable vamos a guardar el resultado del recorte - FONDO:
+        let backgroundProfile = [];
+
+        // En esta variable vamos a guardar el resultado del recorte - PERFIL:
+        let photoProfile = [];
+
+        // Botón de cambiar imagen una vez ya selecionada una - FONDO: 
+        const cropBtn1 = document.getElementById('cropBtn1')
+        cropBtn1.addEventListener('click', async (e) => {
+            fileInput1.click();
+        });
+
+        // Botón de cambiar imagen una vez ya selecionada una - PERFIL:
+        const cropBtn3 = document.getElementById('cropBtn3')
+        cropBtn3.addEventListener('click', async (e) => {
+            fileInput2.click();
+        });
+
+        // Instancia de croppie para FONDO:
+        let croppieInstance1;
+        // Instancia de cropie para PERFIL: 
+        let croppieInstance2;
+
+        // Peso maximo por archivo (Bloque 02):
+        const MAX_PESO_PERMITIDO = 20 * 1024 * 1024;
+
+        // Función para validar la extensión del archivo (Bloque 03):
+        function esExtensionPermitida(archivo) {
+            const extensionesPermitidas = ["jpg", "jpeg", "png"];
+            const nombreArchivo = archivo.name.toLowerCase();
+            const extension = nombreArchivo.substring(nombreArchivo.lastIndexOf(".") + 1);
+            return extensionesPermitidas.includes(extension);
+        }
+
+        // Función para comprimir:
+        async function comprimirImagen(file) {
+            const limiteCompresion = 150 * 1024; // 150 KB
+            const nivelCompress = 0.4;
+            if (file.size > limiteCompresion) {
+                return new Promise((resolve, reject) => {
+                    const imagen = new Image();
+                    imagen.onload = () => {
+                        const canvas = document.createElement("canvas");
+                        canvas.width = imagen.width;
+                        canvas.height = imagen.height;
+                        canvas.getContext("2d").drawImage(imagen, 0, 0);
+                        canvas.toBlob(
+                            (blob) => {
+                                if (blob === null) {
+                                    return reject({ error: "No se pudo crear el blob" });
+                                } else {
+                                    resolve(blob);
+                                }
+                            }, "image/jpeg", nivelCompress
+                        );
+                    };
+                    imagen.src = URL.createObjectURL(file);
+                });
+            } else {
+                return Promise.resolve(file);
+            }
+        }
+
+        // Función de Croopie - FONDO:
+        async function handleFiles1(file1) {
+            if (file1.size > MAX_PESO_PERMITIDO) {
+                containerImg1.style.display = 'none'
+                resultElement1.style.display = 'none'
+                dropContainer1.style.display = 'flex'
+                return SwalRed.fire({
+                    icon: 'warning',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    titleText: 'Error',
+                    text: `El archivo ${file1.name} supera el tamaño máximo permitido.`,
+                });
+            }
+            if (!esExtensionPermitida(file1)) {
+                containerImg1.style.display = 'none'
+                resultElement1.style.display = 'none'
+                dropContainer1.style.display = 'flex'
+                return SwalRed.fire({
+                    icon: 'warning',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    titleText: 'Error',
+                    text: `El archivo ${file1.name} tiene una extensión no permitida.`,
+                });
+            }
+            // Comprimir la imagen original:
+            let blobComprimido = await comprimirImagen(file1)
+            // Obtener el contenedor de Croppie:
+            const cropContainer1 = document.getElementById('cropContainer1');
+            // Crear un FileReader para leer el blob comprimido:
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Crear o actualizar la instancia de Croppie:
+                if (!croppieInstance1) {
+                    croppieInstance1 = new Croppie(cropContainer1, {
+                        viewport: { width: 250, height: 160 },
+                        boundary: { width: 250, height: 160 },
+                        enableZoom: true,
+                        enableResize: false,
+                        mouseWheelZoom: 'ctrl',
+                        quality: 1,
+                        zoom: {
+                            min: 1,
+                            max: 1.5
+                        }
+                    });
+                }
+                // Enlazar el blob comprimido a Croppie:
+                croppieInstance1.bind({
+                    url: e.target.result
+                });
+            };
+            // Leer el blob comprimido como una URL de datos:
+            reader.readAsDataURL(blobComprimido);
+        }
+
+        // Función de Croopie - PERFIL:
+        async function handleFiles2(file2) {
+            if (file2.size > MAX_PESO_PERMITIDO) {
+                containerImg2.style.display = 'none'
+                resultElement2.style.display = 'none'
+                dropContainer2.style.display = 'flex'
+                return SwalRed.fire({
+                    icon: 'warning',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    titleText: 'Error',
+                    text: `El archivo ${file2.name} supera el tamaño máximo permitido.`,
+                });
+            }
+            if (!esExtensionPermitida(file2)) {
+                containerImg2.style.display = 'none'
+                resultElement2.style.display = 'none'
+                dropContainer2.style.display = 'flex'
+                return SwalRed.fire({
+                    icon: 'warning',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    titleText: 'Error',
+                    text: `El archivo ${file2.name} tiene una extensión no permitida.`,
+                });
+            }
+            // Comprimir la imagen original:
+            let blobComprimido = await comprimirImagen(file2)
+            // Obtener el contenedor de Croppie:
+            const cropContainer2 = document.getElementById('cropContainer2');
+            // Crear un FileReader para leer el blob comprimido:
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Crear o actualizar la instancia de Croppie:
+                if (!croppieInstance2) {
+                    croppieInstance2 = new Croppie(cropContainer2, {
+                        viewport: { width: 158, height: 158, type: 'circle' },
+                        boundary: { width: 158, height: 158 },
+                        enableZoom: true,
+                        enableResize: false,
+                        mouseWheelZoom: 'ctrl',
+                        quality: 1,
+                        zoom: {
+                            min: 1,
+                            max: 1.5
+                        }
+                    });
+                }
+                // Enlazar el blob comprimido a Croppie:
+                croppieInstance2.bind({
+                    url: e.target.result
+                });
+            };
+            // Leer el blob comprimido como una URL de datos:
+            reader.readAsDataURL(blobComprimido);
+        }
+
+
+
+
+        // Función para realizar el recorte y mostrar el resultado - FONDO:
+        const cropBtn2 = document.getElementById('cropBtn2')
+        cropBtn2.addEventListener('click', function () {
+            if (croppieInstance1) {
+                croppieInstance1.result({
+                    type: 'blob',
+                    format: 'jpg',
+                    quality: 1,
+                    size: 'original'
+                }).then(function (blob) {
+                    // Revocar la URL del blob anterior si existe
+                    if (backgroundProfile[0]) {
+                        URL.revokeObjectURL(backgroundProfile[0]);
+                    }
+                    // Limpiar el arreglo backgroundProfile y agregar el nuevo blob
+                    backgroundProfile = []
+                    backgroundProfile.push(blob)
+                    // Cargar el resultado actualizado
+                    let imageUrl = URL.createObjectURL(backgroundProfile[0]);
+                    loadResult1(imageUrl)
+                    return
+                });
+            }
+        });
+
+
+        // Función para realizar el recorte y mostrar el resultado - PERFIL:
+        const cropBtn4 = document.getElementById('cropBtn4')
+        cropBtn4.addEventListener('click', function () {
+            if (croppieInstance2) {
+                croppieInstance2.result({
+                    type: 'blob',
+                    format: 'jpg',
+                    quality: 1,
+                    size: 'original'
+                }).then(function (blob) {
+                    // Revocar la URL del blob anterior si existe
+                    if (photoProfile[0]) {
+                        URL.revokeObjectURL(photoProfile[0]);
+                    }
+                    // Limpiar el arreglo photoProfile y agregar el nuevo blob
+                    photoProfile = []
+                    photoProfile.push(blob)
+                    // Cargar el resultado actualizado
+                    let imageUrl = URL.createObjectURL(photoProfile[0]);
+                    loadResult2(imageUrl)
+                    return
+                });
+            }
+        });
+
+
+
+
+        // Cargar el recorte - FONDO:
+        function loadResult1(imageUrl) {
+            containerImg1.style.display = 'none'
+            resultElement1.style.display = 'flex'
+            resultElement1.innerHTML = ""
+            let htmlResult = ""
+            htmlResult += `
+    <div class="actions1">
+        <div style="width: 24px"></div>
+        <div id="deletePhoto1" style=" width: 24px; height: 24px; background: gray; border-radius: 100%">
+            <svg class="svg" class="w-6 h-6 text-gray-800 dark:text-white"
+                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M6 18 17.94 6M18 18 6.06 6" />
+            </svg>
+        </div>
+    </div>
+    <img style="width: 250px; height: 160px; border-radius: 0.5em;" src="${imageUrl}" alt="Cropped Image">
+    `;
+            resultElement1.innerHTML = htmlResult
+            const deletePhoto1 = document.getElementById('deletePhoto1')
+            deletePhoto1.addEventListener('click', function (e) {
+                e.preventDefault()
+                containerImg1.style.display = 'none'
+                resultElement1.style.display = 'none'
+                dropContainer1.style.display = 'flex'
+            })
+        }
+
+
+        // Cargar el recorte - PERFIL:
+        function loadResult2(imageUrl) {
+            containerImg2.style.display = 'none'
+            resultElement2.style.display = 'flex'
+            resultElement2.innerHTML = ""
+            let htmlResult = ""
+            htmlResult += `
+    <div class="actions2">
+        <div style="width: 24px"></div>
+        <div id="deletePhoto2" style=" width: 24px; height: 24px; background: gray; border-radius: 100%">
+            <svg class="svg" class="w-6 h-6 text-gray-800 dark:text-white"
+                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M6 18 17.94 6M18 18 6.06 6" />
+            </svg>
+        </div>
+    </div>
+    <img style="width: 150px; height:150px;" src="${imageUrl}" alt="Cropped Image">
+    `;
+            resultElement2.innerHTML = htmlResult
+            const deletePhoto2 = document.getElementById('deletePhoto2')
+            deletePhoto2.addEventListener('click', function (e) {
+                e.preventDefault()
+                containerImg2.style.display = 'none'
+                resultElement2.style.display = 'none'
+                dropContainer2.style.display = 'flex'
+            })
+        }
+
+        // Contador de caracteres Text Area: 
+        const textarea = document.getElementById('description');
+        const characterCount = document.getElementById('characterCount');
+        textarea.addEventListener('input', updateCharacterCount);
+        function updateCharacterCount() {
+            const remainingChars = 0 + textarea.value.length;
+            characterCount.textContent = remainingChars + "/300";
+        }
+
+
+        /*
+        function cargarMaps(ubicacionActual) {
+             // Convertir las coordenadas al formato adecuado
+             let latitudLeaflet = ubicacionActual[0];
+             let longitudLeaflet = ubicacionActual[1];
+        
+             
+            console.log(`Ubicación actual (Leaflet):", ${latitudLeaflet}, ${longitudLeaflet}`);
+        
+           // let comercialName = "Local Market"
+        
+            console.log(ubicacionActual)
+        
+            let map = L.map('map').setView([ubicacionActual], 15)
+        
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 17,
+                minZoom: 11,
+                opacity: 0.9,
+            }).addTo(map);
+        
+            //L.marker([-27.41473, -55.99646]).addTo(map)
+            -27.2564224
+            -27.41473
+        
+        
+        }
+        */
+
+
+
+        function cargarMaps(ubicacionActual) {
+            // Convertir las coordenadas al formato adecuado
+            let latitudLeaflet = ubicacionActual[0];
+            let longitudLeaflet = ubicacionActual[1];
+            let map = L.map('map').setView([latitudLeaflet, longitudLeaflet], 15);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 17,
+                minZoom: 11,
+                opacity: 0.9
+            }).addTo(map);
+
+            // Acá hay que tomar el nombre comercial ingresado:
+            let comercialName = "Local Market"
+
+            L.marker([latitudLeaflet, longitudLeaflet]).addTo(map)
+                .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+                .openPopup();
+
+            var circle = L.circle([latitudLeaflet, longitudLeaflet], {
+                color: '#009FF5',
+                fillColor: '#009FF5',
+                fillOpacity: 0.5,
+                radius: 200
+            }).bindPopup(`${comercialName}`).addTo(map);
+
+        }
+
+        const btnCargarMaps = document.getElementById('cargarMaps')
+        btnCargarMaps.addEventListener('click', function (e) {
+            e.preventDefault()
+            cargarMaps(ubicacionActual);
+        })
+
+
+        /*
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        async function subirImagen() {
+            const archivo = await comprimirImagen(photoProfile[0])
+            console.log(archivo)
+            const formData = new FormData();
+            formData.append('key', 'f1cfda5bb95493b24b6da48eaef8f567');
+            formData.append('image', archivo);
+            try {
+                const response = await fetch('https://api.imgbb.com/1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const res = await response.json();
+                console.log(res)
+                const imageUrl = res.data.url;
+                return console.log(`URL de la imagen subida:${imageUrl}`);
+            } catch (error) {
+                console.log('Error al subir la imagen.</p>')
+            }
+        }
+        
+        
+        const subir = document.getElementById("subir")
+        
+        subir.addEventListener('click', function (e) {
+            e.preventDefault()
+            subirImagen()
+        })
+        
+        */
+
+    </script>
+
+    </script>
+
+</body>
+
+</html>
