@@ -695,8 +695,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/sweetAlertCustom.js"></script>
+
     <script>
 
         let btnVerificar = document.getElementById('verificarUbicacion')
@@ -1227,23 +1226,35 @@
         */
 
 
-
         function cargarMaps(ubicacionActual) {
             // Convertir las coordenadas al formato adecuado
             let latitudLeaflet = ubicacionActual[0];
             let longitudLeaflet = ubicacionActual[1];
             let map = L.map('map').setView([latitudLeaflet, longitudLeaflet], 16);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+
+
+            L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                 maxZoom: 20,
                 minZoom: 11,
-                opacity: 0.9
+                opacity: 0.9,
+                crossOrigin: true,
+                errorTileUrl: 'https://example.com/error.png',
             }).addTo(map);
 
             // Acá hay que tomar el nombre comercial ingresado:
             let comercialName = "Local Market"
 
-            L.marker([latitudLeaflet, longitudLeaflet]).addTo(map)
+            // Crear un icono personalizado
+            let customIcon = L.icon({
+                iconUrl: '/img/ubiLogo.png', // Ruta de la imagen del logo personalizado
+                iconSize: [37, 53], // Tamaño del icono en píxeles
+                iconAnchor: [18.5, 53], // Punto de anclaje del icono (centro inferior)
+                popupAnchor: [0, -50] // Punto de anclaje del popup del icono (arriba del icono)
+            });
+
+
+            L.marker([latitudLeaflet, longitudLeaflet], { icon: customIcon }).addTo(map)
                 .bindPopup('A pretty CSS popup.<br> Easily customizable.')
                 .openPopup();
 
