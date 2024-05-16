@@ -725,10 +725,10 @@
             }
             function mostrarUbicacion(posicion) {
 
-               
+
                 let latitude = posicion.coords.latitude;
                 let longitude = posicion.coords.longitude;
-             
+
 
                 let estaDentro = puntoDentroDelPoligono(latitude, longitude, puntos);
                 let resultadoUbi = document.getElementById('resultadoUbi');
@@ -740,10 +740,10 @@
                     ifUbiValida.style.marginTop = '0'
                     ifUbiValida.style.paddingTop = '0'
 
-                  
+
                     // Guardar la ubicación en la variable para usarla en el map
                     ubicacionActual = [`${posicion.coords.latitude}`, `${posicion.coords.longitude}`];
-                
+
 
                     console.log(ubicacionActual)
 
@@ -1237,8 +1237,7 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 20,
                 minZoom: 11,
-                opacity: 0.9,
-                detectRetina: false,
+                opacity: 0.9
             }).addTo(map);
 
             // Acá hay que tomar el nombre comercial ingresado:
