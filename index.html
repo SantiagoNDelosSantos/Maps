@@ -1231,23 +1231,19 @@
             let latitudLeaflet = ubicacionActual[0];
             let longitudLeaflet = ubicacionActual[1];
             let map = L.map('map').setView([latitudLeaflet, longitudLeaflet], 16);
-
-
-            L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 20,
                 minZoom: 11,
-                opacity: 0.9,
-                crossOrigin: true,
-                errorTileUrl: 'https://example.com/error.png',
+                opacity: 0.9
             }).addTo(map);
 
             // Acá hay que tomar el nombre comercial ingresado:
             let comercialName = "Local Market"
 
-            // Crear un icono personalizado
-            let customIcon = L.icon({
-                iconUrl: '/img/ubiLogo.png', // Ruta de la imagen del logo personalizado
+             // Crear un icono personalizado
+             let customIcon = L.icon({
+                iconUrl: './img/ubiLogo.png', // Ruta de la imagen del logo personalizado
                 iconSize: [37, 53], // Tamaño del icono en píxeles
                 iconAnchor: [18.5, 53], // Punto de anclaje del icono (centro inferior)
                 popupAnchor: [0, -50] // Punto de anclaje del popup del icono (arriba del icono)
