@@ -725,15 +725,10 @@
             }
             function mostrarUbicacion(posicion) {
 
-                /*SOLO PRUEBA - ESTO HAY QUE ELIMINAR PARA QUE SE TOMEN LAS COORDENADAS REALES. */
-                let latitude = -27.392132
-                let longitude = -55.913362
-
-                /*
-                FINAL
+               
                 let latitude = posicion.coords.latitude;
                 let longitude = posicion.coords.longitude;
-                */
+             
 
                 let estaDentro = puntoDentroDelPoligono(latitude, longitude, puntos);
                 let resultadoUbi = document.getElementById('resultadoUbi');
@@ -745,14 +740,10 @@
                     ifUbiValida.style.marginTop = '0'
                     ifUbiValida.style.paddingTop = '0'
 
-                    // SOLO PRUEBA: 
-                    ubicacionActual = [`${latitude}`, `${longitude}`]
-
-                    /*
-                    FINAL
+                  
                     // Guardar la ubicación en la variable para usarla en el map
                     ubicacionActual = [`${posicion.coords.latitude}`, `${posicion.coords.longitude}`];
-                    */
+                
 
                     console.log(ubicacionActual)
 
