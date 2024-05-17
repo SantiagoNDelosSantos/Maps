@@ -589,20 +589,27 @@
     background-color: #2196F3;
 }
 
+
 .toggle-label:before {
     content: '';
     position: absolute;
-    left: 4px; /* Espacio a la izquierda */
-    bottom: 4px; /* Espacio en la parte inferior */
-    width: 26px; /* Ancho del botón */
-    height: 26px; /* Altura del botón */
+    left: 4px;
+    /* Espacio a la izquierda */
+    bottom: 4px;
+    /* Espacio en la parte inferior */
+    width: 26px;
+    /* Ancho del botón */
+    height: 26px;
+    /* Altura del botón */
     background-color: white;
     border-radius: 50%;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
 }
 
 .toggle-input:checked + .toggle-label:before {
-    transform: translateX(21.5px); /* Desplazar el botón */
+    transform: translateX(26px); /* Mover a la derecha 26px */
+    right: 4px !important;
 }
 
         </style>
@@ -754,7 +761,7 @@
         <p>Te ofrecemos dos opciones para configurar tu dirección, pero ten en cuenta que son excluyentes:</p>
 
         <div class="divSwitch">
-            <p style="width: 90%;"><b>Dirección exacta con marcador.</b></p>
+            <p style="width: 80%;"><b>Dirección exacta con marcador.</b></p>
             <div class="switch-container">
                 <input type="checkbox" id="checkOp1" class="toggle-input">
                 <label for="checkOp1" class="toggle-label"></label>
@@ -762,7 +769,7 @@
         </div>
     
         <div class="divSwitch">
-            <p style="width: 90%;"><b>Dirección aproximada con un radio de 200 metros.</b></p>
+            <p style="width: 80%;"><b>Dirección aproximada con un radio de 200 metros.</b></p>
             <div class="switch-container">
                 <input type="checkbox" id="checkOp2" class="toggle-input">
                 <label for="checkOp2" class="toggle-label"></label>
