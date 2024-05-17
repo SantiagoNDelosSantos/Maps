@@ -551,65 +551,58 @@
     font-weight: 500;
 }
 
+
 /* Estilos para el switch */
 .divSwitch {
     display: flex;
     justify-content: space-between;
+    flex-direction: row;
     align-items: center;
     width: 100%;
+    margin-bottom: 1em; /* Añadir un poco de espacio entre los interruptores */
 }
 
-.switch {
+.switch-container {
     position: relative;
     display: inline-block;
-    width: 4.22em;
-    height: 2.125em;
+    width: 60px;
+    height: 34px;
 }
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+.toggle-input {
+    display: none;
 }
 
-.slider {
+.toggle-label {
     position: absolute;
-    cursor: pointer;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: 100%;
     background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
+    border-radius: 17px; /* Mitad de la altura */
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 1.625em;
-    width: 1.625em;
-    left: 0.25em;
-    bottom: 0.25em;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-input:checked + .slider {
+.toggle-input:checked + .toggle-label {
     background-color: #2196F3;
 }
 
-input:checked + .slider:before {
-    transform: translateX(1.625em);
-}
-
-.slider.round {
-    border-radius: 2.125em;
-}
-
-.slider.round:before {
+.toggle-label:before {
+    content: '';
+    position: absolute;
+    left: 4px; /* Espacio a la izquierda */
+    bottom: 4px; /* Espacio en la parte inferior */
+    width: 26px; /* Ancho del botón */
+    height: 26px; /* Altura del botón */
+    background-color: white;
     border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.toggle-input:checked + .toggle-label:before {
+    transform: translateX(21.5px); /* Desplazar el botón */
 }
 
         </style>
@@ -762,23 +755,23 @@ input:checked + .slider:before {
 
         <div class="divSwitch">
             <p style="width: 90%;"><b>Dirección exacta con marcador.</b></p>
-            <label class="switch">
-                <input type="checkbox" id="checkOp1">
-                <span class="slider round"></span>
-            </label>
+            <div class="switch-container">
+                <input type="checkbox" id="checkOp1" class="toggle-input">
+                <label for="checkOp1" class="toggle-label"></label>
+            </div>
         </div>
-
+    
         <div class="divSwitch">
             <p style="width: 90%;"><b>Dirección aproximada con un radio de 200 metros.</b></p>
-            <label class="switch">
-                <input type="checkbox" id="checkOp2">
-                <span class="slider round"></span>
-            </label>
+            <div class="switch-container">
+                <input type="checkbox" id="checkOp2" class="toggle-input">
+                <label for="checkOp2" class="toggle-label"></label>
+            </div>
         </div>
-
-        <p>Independientemente de la opción que elijas, recuerda que siempre podrás proporcionar detalles adicionales a
-            los usuarios una vez que te contacten.</p>
-
+    
+        <p>Independientemente de la opción que elijas, recuerda que siempre podrás proporcionar detalles adicionales a los
+            usuarios una vez que te contacten.</p>
+    
         <div id="map" style="display: none;"></div>
 
     </div>
