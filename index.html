@@ -516,11 +516,242 @@
 
 
 
-            #map {
-                width: 100%;
-                height: 20em;
-                border-radius: 0.5em
-            }
+            textarea:focus {
+    outline-color: #009FF5 !important;
+}
+
+/* Area del Map */
+#map {
+    width: 100%;
+    height: 17em;
+    border-radius: 0.5em
+}
+.leaflet-container {
+    background: #fff !important;
+}
+.leaflet-control-attribution a {
+    text-decoration: none !important;
+}
+.leaflet-container a {
+    color: #38393C !important;
+}
+.leaflet-container .leaflet-control-attribution {
+    border-top-left-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+    border: rgba(0, 0, 0, 0.2) solid 2px
+}
+.leaflet-attribution-flag {
+    display: none !important;
+}
+
+
+/*Texto del popup del map*/
+.leaflet-popup-content {
+    color: #000000;
+    font-weight: 500;
+}
+
+/* Estilos para el switch */
+.divSwitch{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    gap: 1em;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 4.4em; 
+    height: 2.125em; 
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 1.625em; 
+    width: 1.625em; 
+    left: 0.25em; 
+    bottom: 0.25em; 
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(1.625em); 
+}
+
+.slider.round {
+    border-radius: 2.125em; 
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+#divTabla {
+    display: none;
+}
+
+#tablaPreview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+tr {
+    display: flex;
+    flex-direction: row;
+}
+
+td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    border: 1.5px solid #ccc;
+    padding: 0.5em;
+    text-align: center;
+    border-radius: 0.7em;
+    height: 5%;
+    margin-bottom: 1em;
+}
+
+tbody,
+tr,
+td {
+    width: 100%;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.svg {
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0.2em;
+    margin-left: 0.3em;
+    cursor: pointer;
+}
+
+.svg:hover {
+    background-color: #e7e5e5;
+    border-radius: 100%;
+}
+
+.svg2 {
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0.2em;
+    margin-left: 0.3em;
+}
+
+#divCrop {
+    display: none;
+}
+
+.shapes {
+    border: 0.2em dashed black;
+    cursor: pointer;
+}
+
+.shapes:hover {
+    border: 0.2em dashed #009FF5;
+}
+
+.cropper-view-box {
+    outline: 2px dashed #009FF5;
+}
+
+.cropper-dashed {
+    border: #ff000000;
+}
+
+.cropper-line {
+    background-color: #ff000000;
+}
+
+.cropper-point.point-se {
+    bottom: 0px;
+    right: 0px;
+}
+
+.cropper-point.point-e,
+.cropper-point.point-n,
+.cropper-point.point-w,
+.cropper-point.point-s,
+.cropper-point.point-nw,
+.cropper-point.point-ne,
+.cropper-point.point-sw {
+    display: none;
+}
+
+.cropper-center:after,
+.cropper-center:before {
+    background-color: #00a6ff;
+    opacity: 1;
+}
+
+.cropper-point.point-se {
+    background-color: #00a6ff;
+    opacity: 1;
+    height: 1rem;
+    width: 1rem;
+    margin-bottom: 1%;
+    margin-right: 1%;
+}
+*/
         </style>
     </head>
 
@@ -660,29 +891,37 @@
         <p>Esencial para el botón 'Contactar' en tus publicaciones (WhatsApp). Debes incluir el prefijo internacional
             argentino (54) seguido del código de área y el número, sin espacios entre ellos. Por ejemplo: 5493764123456.
         </p>
-        <input type="text" name="phone" id="phone" class="input__field" placeholder="Número de Celular" maxlength="20">
+        <input type="number" name="phone" id="phone" class="input__field" placeholder="Número de Celular" required>
 
         <!-- Número de celular -->
         <p><b>Dirección:</b></p>
-        <p>Para la dirección de tu Perfil Seller hay cuatro opciones entre las que puedes elegir.</p>
+        <p>Por defecto, todo Perfil Seller debe tener al menos una dirección. El propósito de proporcionar una dirección
+            en
+            tu Perfil Seller es permitir a los usuarios tener una idea general de tu ubicación y cercanía.</p>
+        <p>Te ofrecemos dos opciones para configurar tu dirección, pero ten en cuenta que son excluyentes:</p>
 
-        <button class="botonText" id="cargarMaps">Cargar mapa</button>
+        <div class="divSwitch">
+            <p style="width: 90%;"><b>Dirección exacta con marcador.</b></p>
+            <label class="switch">
+                <input type="checkbox" id="checkOp1">
+                <span class="slider round"></span>
+            </label>
+        </div>
 
-        <div id="map"></div>
+        <div class="divSwitch">
+            <p style="width: 90%;"><b>Dirección aproximada con un radio de 200 metros.</b></p>
+            <label class="switch">
+                <input type="checkbox" id="checkOp2">
+                <span class="slider round"></span>
+            </label>
+        </div>
 
-        <!--
-    
-            phone:
-            // LOCALIDAD.
-            location:
-            // DIRECCIÓN EN CASO DE TENER TIENDA FISICA.
-            address:
-    
-            totalPublications:
-            followersCount:
-        </h2>
-    
-        -->
+        <p>Independientemente de la opción que elijas, recuerda que siempre podrás proporcionar detalles adicionales a
+            los usuarios una vez que te contacten.</p>
+
+        <div id="map" style="display: none;"></div>
+
+    </div>
 
 
     </div>
@@ -1195,101 +1434,111 @@
         }
 
 
-        /*
-        function cargarMaps(ubicacionActual) {
-             // Convertir las coordenadas al formato adecuado
-             let latitudLeaflet = ubicacionActual[0];
-             let longitudLeaflet = ubicacionActual[1];
-        
-             
-            console.log(`Ubicación actual (Leaflet):", ${latitudLeaflet}, ${longitudLeaflet}`);
-        
-           // let comercialName = "Local Market"
-        
-            console.log(ubicacionActual)
-        
-            let map = L.map('map').setView([ubicacionActual], 15)
-        
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 17,
-                minZoom: 11,
-                opacity: 0.9,
-            }).addTo(map);
-        
-            //L.marker([-27.41473, -55.99646]).addTo(map)
-            -27.2564224
-            -27.41473
-        
-        
-        }
-        */
+        // Carga del mapa: 
+        let map;
 
+        function cargarMaps(ubicacionActual, addressFormat) {
 
-        function cargarMaps(ubicacionActual) {
+            // Verificar si el mapa ya está inicializado y destruirlo si es necesario
+            if (map) {
+                map.remove();
+            }
+
             // Convertir las coordenadas al formato adecuado
             let latitudLeaflet = ubicacionActual[0];
             let longitudLeaflet = ubicacionActual[1];
 
+            map = L.map('map').setView([latitudLeaflet, longitudLeaflet], 16);
 
-            let map = L.map('map').setView([latitudLeaflet, longitudLeaflet], 17);
-
+            // Capa "CartoDB Positron"
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 tileSize: 512, // Ajusta el tamaño de los azulejos
                 zoomOffset: -1,
                 attribution: '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="https://carto.com/attributions">CARTO</a>',
                 subdomains: 'abcd',
-                maxZoom: 19,
+                maxZoom: 20,
                 minZoom: 11,
                 opacity: 1,
                 ext: 'jpg'
             }).addTo(map);
 
-
-            // Acá hay que tomar el nombre comercial ingresado:
-            let comercialName = "Local Market"
-
             // Crear un icono personalizado
             let customIcon = L.icon({
-                iconUrl: './img/ubiLogo.png', // Ruta de la imagen del logo personalizado
-                iconSize: [37, 51], // Tamaño del icono en píxeles
-                iconAnchor: [18.5, 53], // Punto de anclaje del icono (centro inferior)
-                popupAnchor: [0, -50] // Punto de anclaje del popup del icono (arriba del icono)
+                iconUrl: '/img/ubiLogo.png',
+                iconSize: [37, 51],
+                iconAnchor: [18.5, 53],
+                popupAnchor: [0, -50]
             });
 
+            let name = document.getElementById('first_name')
 
-            L.marker([latitudLeaflet, longitudLeaflet], { icon: customIcon }).addTo(map)
-                .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-                .openPopup();
+            if (addressFormat === 'exact' && name.value) {
+                // Marcador (Con pop):
+                L.marker([latitudLeaflet, longitudLeaflet], { icon: customIcon }).addTo(map).bindPopup(name.value)
+            } else if (addressFormat === 'exact') {
+                // Marcador (Sin pop):
+                L.marker([latitudLeaflet, longitudLeaflet], { icon: customIcon }).addTo(map)
+            }
 
-            var circle = L.circle([latitudLeaflet, longitudLeaflet], {
-                color: '#009FF5',
-                fillColor: '#009FF5',
-                fillOpacity: 0.5,
-                radius: 100
-            }).bindPopup(`${comercialName}`).addTo(map);
+            if (addressFormat === 'approximate') {
+                // Circulo:
+                L.circle([latitudLeaflet, longitudLeaflet], {
+                    color: '#009FF5',
+                    fillColor: '#009FF5',
+                    fillOpacity: 0.5,
+                    radius: 100
+                }).addTo(map);
+            }
 
         }
 
         const btnCargarMaps = document.getElementById('cargarMaps')
-        btnCargarMaps.addEventListener('click', function (e) {
-            e.preventDefault()
-            cargarMaps(ubicacionActual);
-        })
+
+        /* Opciones de mapa */
+        let checkOp1 = document.getElementById('checkOp1');
+        let checkOp2 = document.getElementById('checkOp2');
+
+        let addressFormat = ''
+
+        function updateMapVisibility() {
+            let divMap = document.getElementById('map')
+            if (checkOp1.checked) {
+                addressFormat = 'exact';
+                divMap.style.display = 'block'
+                cargarMaps(ubicacionActual, addressFormat);
+            } else if (checkOp2.checked) {
+                addressFormat = 'approximate';
+                divMap.style.display = 'block'
+                cargarMaps(ubicacionActual, addressFormat);
+            } else {
+                divMap.style.display = 'none'
+            }
+        }
+
+        checkOp1.addEventListener('change', function () {
+            if (this.checked) {
+                checkOp2.checked = false;
+            }
+            updateMapVisibility();
+        });
+
+        checkOp2.addEventListener('change', function () {
+            if (this.checked) {
+                checkOp1.checked = false;
+            }
+            updateMapVisibility();
+        });
+
+
+
+
+
+
+
+
 
 
         /*
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         async function subirImagen() {
             const archivo = await comprimirImagen(photoProfile[0])
@@ -1320,10 +1569,8 @@
         })
         
         */
-
     </script>
 
-    </script>
 
 </body>
 
