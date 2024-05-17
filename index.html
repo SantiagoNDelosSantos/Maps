@@ -1230,19 +1230,20 @@
             // Convertir las coordenadas al formato adecuado
             let latitudLeaflet = ubicacionActual[0];
             let longitudLeaflet = ubicacionActual[1];
-            let map = L.map('map').setView([latitudLeaflet, longitudLeaflet], 16);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 20,
+            let map = L.map('map').setView([latitudLeaflet, longitudLeaflet], 17);
+            L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                maxZoom: 19,
                 minZoom: 11,
-                opacity: 0.9
+                opacity: 0.9,
+                ext: 'jpg'
             }).addTo(map);
 
             // Acá hay que tomar el nombre comercial ingresado:
             let comercialName = "Local Market"
 
-             // Crear un icono personalizado
-             let customIcon = L.icon({
+            // Crear un icono personalizado
+            let customIcon = L.icon({
                 iconUrl: './img/ubiLogo.png', // Ruta de la imagen del logo personalizado
                 iconSize: [37, 51], // Tamaño del icono en píxeles
                 iconAnchor: [18.5, 53], // Punto de anclaje del icono (centro inferior)
